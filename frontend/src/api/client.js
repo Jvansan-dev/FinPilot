@@ -1,4 +1,6 @@
-const BASE_URL = '/api';
+// Em dev, o Vite faz proxy de /api para o backend local (ver vite.config.js).
+// Em produção, defina VITE_API_URL com a URL pública do backend (ex.: Render).
+const BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 function getToken() {
   return localStorage.getItem('token');

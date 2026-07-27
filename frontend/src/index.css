@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  transition: background-color 0.2s ease;
+}
+
+body {
+  @apply bg-gray-50 text-gray-900 dark:bg-slate-950 dark:text-slate-100;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-slate-700;
+  border-radius: 9999px;
+}
+
+.glass-card {
+  @apply bg-white border border-gray-200 dark:bg-slate-900/60 dark:border-slate-800 backdrop-blur-sm;
+}

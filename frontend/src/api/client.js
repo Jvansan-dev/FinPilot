@@ -37,6 +37,9 @@ async function request(path, { method = 'GET', body } = {}) {
 export const api = {
   login: (email, senha) => request('/auth/login', { method: 'POST', body: { email, senha } }),
   register: (nome, email, senha) => request('/auth/register', { method: 'POST', body: { nome, email, senha } }),
+  forgotPassword: (email) => request('/auth/forgot-password', { method: 'POST', body: { email } }),
+  resetPassword: (email, token, novaSenha) =>
+    request('/auth/reset-password', { method: 'POST', body: { email, token, novaSenha } }),
 
   getAccounts: () => request('/accounts'),
   createAccount: (data) => request('/accounts', { method: 'POST', body: data }),

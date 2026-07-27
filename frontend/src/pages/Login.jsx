@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Rocket, Sun, Moon } from 'lucide-react';
 import { api } from '../api/client.js';
 import { useTheme } from '../context/ThemeContext.jsx';
@@ -97,6 +97,15 @@ export default function Login() {
         >
           {carregando ? 'Aguarde...' : modo === 'login' ? 'Entrar' : 'Criar conta'}
         </button>
+
+        {modo === 'login' && (
+          <Link
+            to="/esqueci-senha"
+            className="block w-full mt-3 text-center text-sm text-brand-600 dark:text-brand-400 hover:underline"
+          >
+            Esqueci minha senha
+          </Link>
+        )}
 
         <button
           type="button"

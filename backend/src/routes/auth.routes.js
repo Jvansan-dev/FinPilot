@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
-import { register, login } from '../controllers/auth.controller.js';
+import { register, login, forgotPassword, resetPassword } from '../controllers/auth.controller.js';
 
 const router = Router();
 
@@ -22,7 +22,18 @@ const registerLimiter = rateLimit({
   message: { error: 'Muitas tentativas de cadastro. Tente novamente mais tarde.' },
 });
 
+// Limita pedidos de redefinição de senha para evitar spam de e-mails
+const forgotPasswordLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  limit: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Muitas solicitações. Tente novamente em alguns minutos.' },
+});
+
 router.post('/register', registerLimiter, register);
 router.post('/login', loginLimiter, login);
+router.post('/forgot-password', forgotPasswordLimiter, forgotPassword);
+router.post('/reset-password', resetPassword);
 
 export default router;

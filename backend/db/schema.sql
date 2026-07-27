@@ -9,6 +9,8 @@ CREATE TABLE users (
     email VARCHAR(160) UNIQUE NOT NULL,
     senha_hash VARCHAR(255) NOT NULL,
     plano VARCHAR(20) NOT NULL DEFAULT 'free',
+    reset_token_hash VARCHAR(64),
+    reset_token_expires_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -62,3 +64,4 @@ CREATE INDEX idx_transactions_category ON transactions(category_id);
 CREATE INDEX idx_accounts_user ON accounts(user_id);
 CREATE INDEX idx_categories_user ON categories(user_id);
 CREATE INDEX idx_budgets_user ON budgets(user_id);
+CREATE INDEX idx_users_reset_token ON users(reset_token_hash);

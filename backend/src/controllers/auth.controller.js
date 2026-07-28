@@ -106,7 +106,13 @@ export async function forgotPassword(req, res, next) {
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
     const linkRedefinicao = `${frontendUrl}/redefinir-senha?token=${token}&email=${encodeURIComponent(emailNormalizado)}`;
 
-    await sendPasswordResetEmail(emailNormalizado, linkRedefinicao);
+    try {
+      await sendPasswordResetEmail(emailNormalizado, linkRedefinicao);
+    } catch (emailErr) {
+      // Nunca deixamos o erro de envio vazar pro cliente: além de ser um detalhe
+      // interno, isso poderia ser usado para descobrir quais e-mails existem.
+      console.error('Falha ao enviar e-mail de redefinição de senha:', emailErr);
+    }
 
     res.json(respostaGenerica);
   } catch (err) {

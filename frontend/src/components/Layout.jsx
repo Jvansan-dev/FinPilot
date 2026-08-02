@@ -20,18 +20,18 @@ export default function Layout({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 relative overflow-hidden">
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 relative overflow-hidden">
       <div className="pointer-events-none fixed inset-0 hidden dark:block">
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-brand-600/20 rounded-full blur-[120px]" />
         <div className="absolute top-1/3 -right-40 w-96 h-96 bg-accent-500/10 rounded-full blur-[120px]" />
       </div>
 
-      <nav className="relative z-10 border-b border-gray-200 dark:border-slate-800/80 bg-white/80 dark:bg-slate-950/70 backdrop-blur-md px-6 py-3 flex items-center justify-between">
+      <nav className="relative z-10 border-b border-neutral-200 dark:border-neutral-800/80 bg-white/80 dark:bg-neutral-950/70 backdrop-blur-md px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-brand-gradient flex items-center justify-center shadow-glow-sm">
             <Rocket size={16} className="text-white" strokeWidth={2.5} />
           </div>
-          <span className="font-semibold tracking-tight text-gray-800 dark:text-white">
+          <span className="font-semibold tracking-tight text-neutral-800 dark:text-white">
             Fin<span className="bg-brand-gradient bg-clip-text text-transparent">Pilot</span>
           </span>
         </div>
@@ -46,7 +46,7 @@ export default function Layout({ children }) {
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   ativo
                     ? 'bg-brand-gradient text-white shadow-glow-sm'
-                    : 'text-gray-600 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-800/70 dark:hover:text-slate-100'
+                    : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800/70 dark:hover:text-neutral-100'
                 }`}
               >
                 <Icon size={15} />
@@ -57,7 +57,7 @@ export default function Layout({ children }) {
 
           <button
             onClick={toggleTheme}
-            className="ml-2 p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-800/70 transition-colors"
+            className="ml-2 p-2 rounded-lg text-neutral-500 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800/70 transition-colors"
             title={theme === 'dark' ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
           >
             {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
@@ -65,7 +65,7 @@ export default function Layout({ children }) {
 
           <button
             onClick={logout}
-            className="ml-1 flex items-center gap-1.5 px-3 py-2 text-sm text-gray-500 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-400 transition-colors"
+            className="ml-1 flex items-center gap-1.5 px-3 py-2 text-sm text-neutral-500 hover:text-red-500 dark:text-neutral-400 dark:hover:text-red-400 transition-colors"
           >
             <LogOut size={15} />
             Sair

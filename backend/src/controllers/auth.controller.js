@@ -2,10 +2,30 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { pool } from '../config/db.js';
-import { sendPasswordResetEmail } from '../utils/mailer.js';
+import { sendPasswordResetEmail, sendVerificationEmail } from '../utils/mailer.js';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SENHA_MIN_LENGTH = 8;
+const VERIFICATION_TOKEN_TTL_MS = 24 * 60 * 60 * 1000; // 24 horas
+
+function gerarTokenVerificacao() {
+  const token = crypto.randomBytes(32).toString('hex');
+  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+  const expiresAt = new Date(Date.now() + VERIFICATION_TOKEN_TTL_MS);
+  return { token, tokenHash, expiresAt };
+}
+
+async function enviarEmailVerificacao(user, token) {
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+  const linkVerificacao = `${frontendUrl}/verificar-email?token=${token}&email=${encodeURIComponent(user.email)}`;
+  try {
+    await sendVerificationEmail(user.email, user.nome, linkVerificacao);
+  } catch (emailErr) {
+    // O cadastro não deve falhar por causa de um problema no envio do e-mail;
+    // o usuário sempre pode pedir para reenviar a confirmação depois.
+    console.error('Falha ao enviar e-mail de verificação:', emailErr);
+  }
+}
 
 export async function register(req, res, next) {
   try {
@@ -29,16 +49,93 @@ export async function register(req, res, next) {
     }
 
     const senhaHash = await bcrypt.hash(senha, 10);
+    const { token, tokenHash, expiresAt } = gerarTokenVerificacao();
+
     const result = await pool.query(
-      `INSERT INTO users (nome, email, senha_hash) VALUES ($1, $2, $3)
+      `INSERT INTO users (nome, email, senha_hash, verification_token_hash, verification_token_expires_at)
+       VALUES ($1, $2, $3, $4, $5)
        RETURNING id, nome, email, plano, created_at`,
-      [nome, emailNormalizado, senhaHash]
+      [nome, emailNormalizado, senhaHash, tokenHash, expiresAt]
     );
 
     const user = result.rows[0];
-    const token = jwt.sign({ sub: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    await enviarEmailVerificacao(user, token);
 
-    res.status(201).json({ user, token });
+    // Sem token de acesso aqui de propósito: o login fica bloqueado até
+    // o e-mail ser confirmado (ver função login abaixo).
+    res.status(201).json({
+      message: 'Conta criada! Enviamos um link de confirmação para o seu e-mail — confirme para poder entrar.',
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function resendVerification(req, res, next) {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ error: 'email é obrigatório' });
+    }
+
+    const emailNormalizado = email.trim().toLowerCase();
+    const result = await pool.query(
+      'SELECT id, nome, email, email_verificado FROM users WHERE email = $1',
+      [emailNormalizado]
+    );
+    const user = result.rows[0];
+
+    // Resposta genérica sempre, pra não revelar quais e-mails existem no sistema.
+    const respostaGenerica = {
+      message: 'Se esse e-mail estiver cadastrado e ainda não confirmado, vamos reenviar o link de confirmação.',
+    };
+
+    if (!user || user.email_verificado) {
+      return res.json(respostaGenerica);
+    }
+
+    const { token, tokenHash, expiresAt } = gerarTokenVerificacao();
+    await pool.query(
+      'UPDATE users SET verification_token_hash = $1, verification_token_expires_at = $2 WHERE id = $3',
+      [tokenHash, expiresAt, user.id]
+    );
+    await enviarEmailVerificacao(user, token);
+
+    res.json(respostaGenerica);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function verifyEmail(req, res, next) {
+  try {
+    const { email, token } = req.body;
+    if (!email || !token) {
+      return res.status(400).json({ error: 'email e token são obrigatórios' });
+    }
+
+    const emailNormalizado = email.trim().toLowerCase();
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+    const result = await pool.query(
+      `SELECT id FROM users
+       WHERE email = $1 AND verification_token_hash = $2 AND verification_token_expires_at > now()`,
+      [emailNormalizado, tokenHash]
+    );
+    const user = result.rows[0];
+
+    if (!user) {
+      return res.status(400).json({ error: 'Link inválido ou expirado. Peça um novo e-mail de confirmação.' });
+    }
+
+    await pool.query(
+      `UPDATE users
+       SET email_verificado = true, verification_token_hash = NULL, verification_token_expires_at = NULL
+       WHERE id = $1`,
+      [user.id]
+    );
+
+    res.json({ message: 'E-mail confirmado com sucesso! Você já pode entrar.' });
   } catch (err) {
     next(err);
   }
@@ -61,6 +158,13 @@ export async function login(req, res, next) {
     const senhaOk = await bcrypt.compare(senha, user.senha_hash);
     if (!senhaOk) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
+    }
+
+    if (!user.email_verificado) {
+      return res.status(403).json({
+        error: 'Confirme seu e-mail antes de entrar. Verifique sua caixa de entrada.',
+        code: 'EMAIL_NAO_CONFIRMADO',
+      });
     }
 
     const token = jwt.sign({ sub: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });

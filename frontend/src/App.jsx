@@ -3,6 +3,7 @@ import Layout from './components/Layout.jsx';
 import Login from './pages/Login.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
 import ResetPassword from './pages/ResetPassword.jsx';
+import VerifyEmail from './pages/VerifyEmail.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Transactions from './pages/Transactions.jsx';
 import Accounts from './pages/Accounts.jsx';
@@ -22,6 +23,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/esqueci-senha" element={<ForgotPassword />} />
       <Route path="/redefinir-senha" element={<ResetPassword />} />
+      <Route path="/verificar-email" element={<VerifyEmail />} />
       <Route
         path="/"
         element={

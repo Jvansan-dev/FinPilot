@@ -11,6 +11,12 @@ CREATE TABLE users (
     plano VARCHAR(20) NOT NULL DEFAULT 'free',
     reset_token_hash VARCHAR(64),
     reset_token_expires_at TIMESTAMPTZ,
+    email_verificado BOOLEAN NOT NULL DEFAULT false,
+    verification_token_hash VARCHAR(64),
+    verification_token_expires_at TIMESTAMPTZ,
+    plan_type VARCHAR(20) DEFAULT 'free',            -- 'free' ou 'premium'
+    gateway_customer_id VARCHAR(100),                -- ID do cliente no Stripe/Mercado Pago
+    subscription_status VARCHAR(20) DEFAULT 'active', -- 'active', 'past_due', 'canceled'
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -65,3 +71,4 @@ CREATE INDEX idx_accounts_user ON accounts(user_id);
 CREATE INDEX idx_categories_user ON categories(user_id);
 CREATE INDEX idx_budgets_user ON budgets(user_id);
 CREATE INDEX idx_users_reset_token ON users(reset_token_hash);
+CREATE INDEX idx_users_verification_token ON users(verification_token_hash);

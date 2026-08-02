@@ -53,11 +53,11 @@ export default function Transactions() {
   }
 
   const inputClass =
-    'border border-gray-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 rounded-md px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/50';
+    'border border-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 rounded-md px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/50';
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">Transações</h1>
+      <h1 className="text-2xl font-semibold text-neutral-800 dark:text-white mb-6">Transações</h1>
 
       <form onSubmit={handleSubmit} className="glass-card rounded-xl p-5 mb-6 grid grid-cols-6 gap-3 items-end">
         <select
@@ -125,21 +125,21 @@ export default function Transactions() {
 
       {erro && <p className="text-sm text-red-500 dark:text-red-400 mb-3">{erro}</p>}
 
-      <div className="glass-card rounded-xl divide-y divide-gray-100 dark:divide-slate-800">
+      <div className="glass-card rounded-xl divide-y divide-neutral-100 dark:divide-neutral-800">
         {transacoes.length === 0 && (
-          <p className="p-5 text-sm text-gray-400 dark:text-slate-500">Nenhuma transação lançada ainda.</p>
+          <p className="p-5 text-sm text-neutral-400 dark:text-neutral-500">Nenhuma transação lançada ainda.</p>
         )}
         {transacoes.map((t) => (
           <div key={t.id} className="flex items-center justify-between px-5 py-3">
             <div>
-              <p className="text-sm text-gray-800 dark:text-slate-200">{t.descricao || '(sem descrição)'}</p>
-              <p className="text-xs text-gray-400 dark:text-slate-500">{t.data?.slice(0, 10)}</p>
+              <p className="text-sm text-neutral-800 dark:text-neutral-200">{t.descricao || '(sem descrição)'}</p>
+              <p className="text-xs text-neutral-400 dark:text-neutral-500">{t.data?.slice(0, 10)}</p>
             </div>
             <div className="flex items-center gap-4">
               <span className={`text-sm font-medium ${t.tipo === 'despesa' ? 'text-red-500 dark:text-red-400' : 'text-emerald-500 dark:text-emerald-400'}`}>
                 {t.tipo === 'despesa' ? '-' : '+'} R$ {Number(t.valor).toFixed(2)}
               </span>
-              <button onClick={() => handleDelete(t.id)} className="text-gray-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400 transition-colors">
+              <button onClick={() => handleDelete(t.id)} className="text-neutral-400 hover:text-red-500 dark:text-neutral-500 dark:hover:text-red-400 transition-colors">
                 <Trash2 size={14} />
               </button>
             </div>

@@ -1,6 +1,9 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
-import { register, login, forgotPassword, resetPassword } from '../controllers/auth.controller.js';
+import {
+  register, login, forgotPassword, resetPassword,
+  verifyEmail, resendVerification,
+} from '../controllers/auth.controller.js';
 
 const router = Router();
 
@@ -31,9 +34,20 @@ const forgotPasswordLimiter = rateLimit({
   message: { error: 'Muitas solicitações. Tente novamente em alguns minutos.' },
 });
 
+// Limita reenvio de e-mail de confirmação para evitar spam de e-mails
+const resendVerificationLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  limit: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Muitas solicitações. Tente novamente em alguns minutos.' },
+});
+
 router.post('/register', registerLimiter, register);
 router.post('/login', loginLimiter, login);
 router.post('/forgot-password', forgotPasswordLimiter, forgotPassword);
 router.post('/reset-password', resetPassword);
+router.post('/verify-email', verifyEmail);
+router.post('/resend-verification', resendVerificationLimiter, resendVerification);
 
 export default router;

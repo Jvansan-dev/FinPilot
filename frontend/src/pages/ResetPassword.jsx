@@ -42,7 +42,7 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950 relative overflow-hidden px-4">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-neutral-950 relative overflow-hidden px-4">
       <div className="pointer-events-none fixed inset-0 hidden dark:block">
         <div className="absolute top-1/4 -left-40 w-96 h-96 bg-brand-600/20 rounded-full blur-[120px]" />
         <div className="absolute bottom-1/4 -right-40 w-96 h-96 bg-accent-500/15 rounded-full blur-[120px]" />
@@ -56,11 +56,11 @@ export default function ResetPassword() {
           <div className="w-9 h-9 rounded-xl bg-brand-gradient flex items-center justify-center shadow-glow-sm">
             <Rocket size={18} className="text-white" strokeWidth={2.5} />
           </div>
-          <h1 className="text-xl font-semibold tracking-tight text-gray-800 dark:text-white">
+          <h1 className="text-xl font-semibold tracking-tight text-neutral-800 dark:text-white">
             Fin<span className="bg-brand-gradient bg-clip-text text-transparent">Pilot</span>
           </h1>
         </div>
-        <p className="text-sm text-gray-500 dark:text-slate-400 mb-6">Crie uma nova senha</p>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">Crie uma nova senha</p>
 
         {sucesso ? (
           <p className="text-sm text-green-600 dark:text-green-400">
@@ -73,7 +73,7 @@ export default function ResetPassword() {
               placeholder="Nova senha"
               value={novaSenha}
               onChange={(e) => setNovaSenha(e.target.value)}
-              className="w-full mb-3 px-3 py-2.5 border border-gray-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+              className="w-full mb-3 px-3 py-2.5 border border-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder-neutral-500 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/50"
               required
               minLength={8}
             />
@@ -82,7 +82,7 @@ export default function ResetPassword() {
               placeholder="Confirmar nova senha"
               value={confirmarSenha}
               onChange={(e) => setConfirmarSenha(e.target.value)}
-              className="w-full mb-4 px-3 py-2.5 border border-gray-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+              className="w-full mb-4 px-3 py-2.5 border border-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder-neutral-500 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/50"
               required
               minLength={8}
             />

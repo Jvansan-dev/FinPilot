@@ -55,11 +55,11 @@ export default function Accounts() {
   }
 
   const inputClass =
-    'border border-gray-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 rounded-md px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/50';
+    'border border-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 rounded-md px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/50';
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">Contas</h1>
+      <h1 className="text-2xl font-semibold text-neutral-800 dark:text-white mb-6">Contas</h1>
 
       <form onSubmit={handleSubmit} className="glass-card rounded-xl p-5 mb-6 grid grid-cols-5 gap-3 items-end">
         <input
@@ -94,7 +94,7 @@ export default function Accounts() {
           type="color"
           value={form.cor}
           onChange={(e) => setForm({ ...form, cor: e.target.value })}
-          className="col-span-1 h-10 border border-gray-300 dark:border-slate-700 rounded-md bg-transparent"
+          className="col-span-1 h-10 border border-neutral-300 dark:border-neutral-700 rounded-md bg-transparent"
           title="Cor da conta"
         />
 
@@ -105,23 +105,23 @@ export default function Accounts() {
 
       {erro && <p className="text-sm text-red-500 dark:text-red-400 mb-3">{erro}</p>}
 
-      <div className="glass-card rounded-xl divide-y divide-gray-100 dark:divide-slate-800">
+      <div className="glass-card rounded-xl divide-y divide-neutral-100 dark:divide-neutral-800">
         {!carregando && contas.length === 0 && (
-          <p className="p-5 text-sm text-gray-400 dark:text-slate-500">Nenhuma conta cadastrada ainda.</p>
+          <p className="p-5 text-sm text-neutral-400 dark:text-neutral-500">Nenhuma conta cadastrada ainda.</p>
         )}
         {contas.map((c) => (
           <div key={c.id} className="flex items-center justify-between px-5 py-3">
             <div className="flex items-center gap-3">
               <span className="w-3 h-3 rounded-full" style={{ backgroundColor: c.cor }} />
               <div>
-                <p className="text-sm text-gray-800 dark:text-slate-200">{c.nome}</p>
-                <p className="text-xs text-gray-400 dark:text-slate-500">
+                <p className="text-sm text-neutral-800 dark:text-neutral-200">{c.nome}</p>
+                <p className="text-xs text-neutral-400 dark:text-neutral-500">
                   {TIPOS.find((t) => t.valor === c.tipo)?.label || c.tipo} · saldo inicial:{' '}
                   {Number(c.saldo_inicial).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                 </p>
               </div>
             </div>
-            <button onClick={() => handleDelete(c.id)} className="text-gray-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400 transition-colors">
+            <button onClick={() => handleDelete(c.id)} className="text-neutral-400 hover:text-red-500 dark:text-neutral-500 dark:hover:text-red-400 transition-colors">
               <Trash2 size={14} />
             </button>
           </div>

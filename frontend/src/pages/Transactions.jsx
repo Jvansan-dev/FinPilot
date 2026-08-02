@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import { api } from '../api/client.js';
 
+const hojeISO = () => new Date().toLocaleDateString('sv-SE'); // formato YYYY-MM-DD no fuso local
+
 export default function Transactions() {
   const [transacoes, setTransacoes] = useState([]);
   const [contas, setContas] = useState([]);
@@ -9,7 +11,7 @@ export default function Transactions() {
   const [erro, setErro] = useState('');
 
   const [form, setForm] = useState({
-    account_id: '', category_id: '', valor: '', tipo: 'despesa', descricao: '', data: '',
+    account_id: '', category_id: '', valor: '', tipo: 'despesa', descricao: '', data: hojeISO(),
   });
 
   async function carregarTudo() {
@@ -36,7 +38,7 @@ export default function Transactions() {
     setErro('');
     try {
       await api.createTransaction({ ...form, valor: Number(form.valor) });
-      setForm({ account_id: '', category_id: '', valor: '', tipo: 'despesa', descricao: '', data: '' });
+      setForm({ account_id: '', category_id: '', valor: '', tipo: 'despesa', descricao: '', data: hojeISO() });
       carregarTudo();
     } catch (err) {
       setErro(err.message);
@@ -103,6 +105,7 @@ export default function Transactions() {
         <input
           type="number"
           step="0.01"
+          min="0"
           placeholder="Valor"
           value={form.valor}
           onChange={(e) => setForm({ ...form, valor: e.target.value })}
@@ -136,8 +139,8 @@ export default function Transactions() {
               <p className="text-xs text-neutral-400 dark:text-neutral-500">{t.data?.slice(0, 10)}</p>
             </div>
             <div className="flex items-center gap-4">
-              <span className={`text-sm font-medium ${t.tipo === 'despesa' ? 'text-red-500 dark:text-red-400' : 'text-emerald-500 dark:text-emerald-400'}`}>
-                {t.tipo === 'despesa' ? '-' : '+'} R$ {Number(t.valor).toFixed(2)}
+              <span className={`text-sm font-medium ${Number(t.valor) < 0 ? 'text-red-500 dark:text-red-400' : 'text-emerald-500 dark:text-emerald-400'}`}>
+                {Number(t.valor) < 0 ? '-' : '+'} R$ {Math.abs(Number(t.valor)).toFixed(2)}
               </span>
               <button onClick={() => handleDelete(t.id)} className="text-neutral-400 hover:text-red-500 dark:text-neutral-500 dark:hover:text-red-400 transition-colors">
                 <Trash2 size={14} />

@@ -52,16 +52,20 @@ export default function Dashboard() {
     carregar();
   }, []);
 
+  // A partir de agora o backend já manda `valor` com o sinal certo
+  // (despesa negativa, receita positiva) — então o saldo é só a soma direta.
   const receitas = transacoes.filter((t) => t.tipo === 'receita').reduce((s, t) => s + Number(t.valor), 0);
-  const despesas = transacoes.filter((t) => t.tipo === 'despesa').reduce((s, t) => s + Number(t.valor), 0);
-  const saldo = receitas - despesas;
+  const despesas = Math.abs(transacoes.filter((t) => t.tipo === 'despesa').reduce((s, t) => s + Number(t.valor), 0));
+  const saldo = transacoes.reduce((s, t) => s + Number(t.valor), 0);
 
   const gastosPorCategoria = categorias
     .map((c, i) => ({
       name: c.nome,
-      value: transacoes
-        .filter((t) => t.category_id === c.id && t.tipo === 'despesa')
-        .reduce((s, t) => s + Number(t.valor), 0),
+      value: Math.abs(
+        transacoes
+          .filter((t) => t.category_id === c.id && t.tipo === 'despesa')
+          .reduce((s, t) => s + Number(t.valor), 0)
+      ),
       cor: CORES[i % CORES.length],
     }))
     .filter((c) => c.value > 0)
@@ -76,7 +80,7 @@ export default function Dashboard() {
         grupos[chave] = { chave, mes: MESES_ABREV[data.getMonth()], receitas: 0, despesas: 0 };
       }
       if (t.tipo === 'receita') grupos[chave].receitas += Number(t.valor);
-      else grupos[chave].despesas += Number(t.valor);
+      else grupos[chave].despesas += Math.abs(Number(t.valor));
     });
     return Object.values(grupos)
       .sort((a, b) => a.chave.localeCompare(b.chave))

@@ -8,7 +8,7 @@ export async function listBudgets(req, res, next) {
          b.*,
          c.nome AS categoria_nome,
          COALESCE((
-           SELECT SUM(t.valor) FROM transactions t
+           SELECT SUM(ABS(t.valor)) FROM transactions t
            WHERE t.category_id = b.category_id
              AND t.user_id = b.user_id
              AND t.tipo = 'despesa'
